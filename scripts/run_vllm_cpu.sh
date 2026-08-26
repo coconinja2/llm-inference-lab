@@ -15,6 +15,7 @@ docker run -d --name vllm-cpu-server \
   vllm-cpu:arm64 \
   --model "$MODEL" \
   --gpu-memory-utilization 0.4 \
+  --enforce-eager \
   "$@"
 
 echo "vLLM CPU server starting for model '$MODEL' -> http://localhost:8000"
