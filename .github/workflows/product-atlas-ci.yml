@@ -1,0 +1,29 @@
+name: product-atlas-ci
+
+on:
+  push:
+    paths:
+      - "product-atlas/**"
+      - ".github/workflows/product-atlas-ci.yml"
+  pull_request:
+    paths:
+      - "product-atlas/**"
+      - ".github/workflows/product-atlas-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build-test-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S product-atlas -B product-atlas/build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build product-atlas/build --parallel
+      - name: Test
+        run: ctest --test-dir product-atlas/build --output-on-failure
+      - name: Privacy audit
+        working-directory: product-atlas
+        run: ./scripts/privacy-audit.sh
